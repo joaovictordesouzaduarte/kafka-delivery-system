@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
     subgraph Producers["🖥️ Data Source (Producers)"]
         CCM["Credit Card Machine"]
@@ -57,3 +58,5 @@ flowchart TD
     PG --> PROM
     S3 --> PROM
     PROM --> GRAF
+
+```
