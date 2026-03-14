@@ -1,0 +1,44 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'kafka-delivery-cluster'
+    environment: 'development'
+
+scrape_configs:
+
+  - job_name: 'kafka-broker'
+
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['kafka1:8091', 'kafka2:8091', 'kafka3:8091']
+        labels:
+          service: 'dev'
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Kafka Connect monitoring
+  - job_name: 'kafka-connect'
+    static_configs:
+      - targets: ['kafka-connect:8083']
+        labels:
+          service: 'kafka-connect'
+
+  # Redis monitoring (if Redis Exporter is added later)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['my-redis:6379']
+        labels:
+          service: 'redis'
+
+  # PostgreSQL monitoring (if Postgres Exporter is added later)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['my-postgres:5432']
+        labels:
+          service: 'postgres'

@@ -1,0 +1,13 @@
+{
+    "name": "redis-sink-driver-locations",
+    "config": {
+      "connector.class": "com.github.jcustenborder.kafka.connect.redis.RedisSinkConnector",
+      "tasks.max": "3",
+      "topics": "driver-locations",
+      "redis.hosts": "my-redis:6379",
+      "redis.database": "0",
+      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+      "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+      "redis.key.pattern": "driver:${topic}:${key}"
+    }
+  }
