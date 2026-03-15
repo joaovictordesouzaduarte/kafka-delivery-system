@@ -62,3 +62,33 @@ POS/API → API Gateway → Kafka [transactions.raw]
 
 ### 4.1 Coleta de dados
 ![Fluxo de Coleta de Dados](./fluxo_coleta_dados.png)
+
+Fontes de dados para treino:
+- Transações históricas do DynamoDB (180 dias)
+- Labels do PostgreSQL (fraud_cases: confirmed fraud + false positives)
+- Dados enriquecidos: user profile, site category, geolocalização
+
+### 4.2 Fluxo de treinamento
+![Fluxo Treinamento](./fluxo_modelo.png)
+
+## 5. Garantia de não SPOF
+
+Apache Kafka -> replication.factor = 3, min.insync.replicas=2. 
+Redis -> Redis com pelo menos 3 masters + 3 réplicas
+PostgreSQL -> Read replicas + MultiAZ
+DynamoDB -> replication_factor=3
+Apache Flink -> Cluster com multiplos TaskManagers
+
+## 6. Monitoramento
+
+### 6.1 Métricas de sistema
+- CPU/Memória dos Serviços
+- Nível de disco dos brokers do Kafka
+- Memória usada no Redis
+
+
+### 6.2 Métricas de Negócio
+- Transações por segundo
+- Blocklist size
+- Taxa de falsos positivos
+- Taxa de falsos negativos
