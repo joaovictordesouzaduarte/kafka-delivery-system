@@ -2,7 +2,7 @@
 
 ## 1 - Diagrama da Arquiterua
 
-Diagrama do sistema Kafka ML
+![Arquitetura](./system_kafka.png)
 
 ## 2 - Casos de uso
 
