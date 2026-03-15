@@ -31,6 +31,9 @@ services:
     image: apache/kafka:4.1.1
     hostname: kafka1
     container_name: kafka1
+    user: "0:0"
+    command: >
+      bash -c "chown -R appuser:appuser /var/kafka/data && exec su appuser -c '/__cacert_entrypoint.sh /etc/kafka/docker/run'"
     networks:
       my_network:
         ipv4_address: 172.20.0.101
@@ -50,18 +53,18 @@ services:
       KAFKA_JMX_PORT: 9999
       KAFKA_JMX_HOSTNAME: kafka1
       KAFKA_OPTS: -javaagent:/tmp/jmx_prometheus_javaagent-1.1.0.jar=8091:/tmp/kafka_config.yml
-
     volumes:
-      - ./kafka-data1:/var/kafka/data
+      - kafka-data1:/var/kafka/data
       - ./monitoring/prometheus/jmx_prometheus_javaagent-1.1.0.jar:/tmp/jmx_prometheus_javaagent-1.1.0.jar
       - ./monitoring/prometheus/kafka_config.yml:/tmp/kafka_config.yml
-
-
 
   kafka2:
     image: apache/kafka:4.1.1
     hostname: kafka2
     container_name: kafka2
+    user: "0:0"
+    command: >
+      bash -c "chown -R appuser:appuser /var/kafka/data && exec su appuser -c '/__cacert_entrypoint.sh /etc/kafka/docker/run'"
     networks:
       my_network:
         ipv4_address: 172.20.0.102
@@ -82,7 +85,7 @@ services:
       KAFKA_JMX_HOSTNAME: kafka2
       KAFKA_OPTS: -javaagent:/tmp/jmx_prometheus_javaagent-1.1.0.jar=8091:/tmp/kafka_config.yml
     volumes:
-      - ./kafka-data2:/var/kafka/data
+      - kafka-data2:/var/kafka/data
       - ./monitoring/prometheus/jmx_prometheus_javaagent-1.1.0.jar:/tmp/jmx_prometheus_javaagent-1.1.0.jar
       - ./monitoring/prometheus/kafka_config.yml:/tmp/kafka_config.yml
 
@@ -90,11 +93,14 @@ services:
     image: apache/kafka:4.1.1
     hostname: kafka3
     container_name: kafka3
+    user: "0:0"
+    command: >
+      bash -c "chown -R appuser:appuser /var/kafka/data && exec su appuser -c '/__cacert_entrypoint.sh /etc/kafka/docker/run'"
     networks:
       my_network:
         ipv4_address: 172.20.0.103
     ports:
-      - "9094:9092" 
+      - "9094:9092"
     environment:
       KAFKA_NODE_ID: 3
       KAFKA_PROCESS_ROLES: broker,controller
@@ -110,7 +116,7 @@ services:
       KAFKA_JMX_HOSTNAME: kafka3
       KAFKA_OPTS: -javaagent:/tmp/jmx_prometheus_javaagent-1.1.0.jar=8091:/tmp/kafka_config.yml
     volumes:
-      - ./kafka-data3:/var/kafka/data
+      - kafka-data3:/var/kafka/data
       - ./monitoring/prometheus/jmx_prometheus_javaagent-1.1.0.jar:/tmp/jmx_prometheus_javaagent-1.1.0.jar
       - ./monitoring/prometheus/kafka_config.yml:/tmp/kafka_config.yml
 
@@ -124,6 +130,9 @@ services:
     depends_on:
       - postgres
       - redis
+      - kafka1
+      - kafka2
+      - kafka3
     ports:
       - "8083:8083"
     environment:
@@ -194,4 +203,10 @@ networks:
 
 volumes:
   postgres-data:
+    driver: local
+  kafka-data1:
+    driver: local
+  kafka-data2:
+    driver: local
+  kafka-data3:
     driver: local
